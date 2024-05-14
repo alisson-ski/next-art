@@ -1,0 +1,12 @@
+<div class="component-container">
+  <div class="cover-and-tags-container">
+    <div class="cover-container">
+      <img class="cover" src="{{ data.imageUrl }}" alt="{{ data.title }} cover" />
+    </div>
+    <div class="tags-container">
+      <span class="ski-tag" *ngFor="let tag of data.tags">{{ tag }}</span>
+    </div>
+  </div>
+
+  <div class="readable-data-container"></div>
+</div>

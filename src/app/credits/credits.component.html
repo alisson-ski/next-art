@@ -1,0 +1,13 @@
+<div class="ski-credits">
+  <span>{{'Feito com <3 por Alisson Lewinski'}}</span>
+    
+  <div class="ski-links">
+    <a *ngFor="let link of links" 
+      [href]="link.href"
+      target="_blank"
+      [title]="link.title"
+    >
+      <span class="{{link.class}}"></span>
+    </a>
+  </div>
+</div>
