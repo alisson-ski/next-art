@@ -14,9 +14,24 @@
 
     .cover-container {
       width: 100%;
+      position: relative;
 
       .cover {
         width: 100%;
+      }
+
+      .stars-container {
+        position: absolute;
+        bottom: 4px;
+        left: 0;
+
+        background-color: var(--component-background);
+        height: 1.3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.2rem;
+        padding: 0 0.4rem;
       }
     }
 
@@ -24,6 +39,26 @@
       display: flex;
       flex-wrap: wrap;
       gap: 0.4rem;
+    }
+  }
+
+  .readable-data-container {
+    width: 60%;
+
+    .title-container {
+      font-size: 1.4rem;
+    }
+
+    .authoring-container {
+      margin-top: 0.3rem;
+
+      h3 {
+        font-size: 1.2rem;
+      }
+    }
+
+    .description-container {
+      margin-top: 2.5rem;
     }
   }
 }

@@ -1,5 +1,19 @@
 @import '../node_modules/ski-design/ski.scss';
 
+.icon-star {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23000' d='M496 203.3H312.36L256 32l-56.36 171.3H16l150.21 105.4l-58.5 171.3L256 373.84L404.29 480l-58.61-171.3Z'/%3E%3C/svg%3E");
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
+//Add to lib later
 .ski-tag {
   font-size: 0.8rem;
   color: var(--white);
@@ -7,3 +21,9 @@
   padding: 0 0.5rem;
   height: 1.3rem;
 }
+
+p {
+  letter-spacing: 0.9px;
+}
+
+.bg-yellow { background-color: var(--yellow); }

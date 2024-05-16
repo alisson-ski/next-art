@@ -1,12 +1,33 @@
 <div class="component-container">
   <div class="cover-and-tags-container">
     <div class="cover-container">
-      <img class="cover" src="{{ data.imageUrl }}" alt="{{ data.title }} cover" />
+      <img class="cover" src="{{data.imageUrl}}" alt="{{data.title}} cover" />
+
+      <div class="stars-container">
+        @for (n of filledStarsArray; track $index) {
+          <span class="icon-star bg-yellow"></span>
+        }
+        @for (n of emptyStarsArray; track $index) {
+          <span class="icon-star bg-gray"></span>
+        }
+      </div>
     </div>
     <div class="tags-container">
-      <span class="ski-tag" *ngFor="let tag of data.tags">{{ tag }}</span>
+      <span class="ski-tag" *ngFor="let tag of data.tags">{{tag}}</span>
     </div>
   </div>
 
-  <div class="readable-data-container"></div>
+  <div class="readable-data-container">
+    <div class="title-container">
+      <h2>{{data.title}}</h2>
+    </div>
+
+    <div class="authoring-container">
+      <h3 class="author">By {{data.author}}, {{data.year}}</h3>
+    </div>
+
+    <div class="description-container">
+      <p>{{data.description}}</p>
+    </div>
+  </div>
 </div>
