@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { MovieService } from '../services/movie.service';
 
 export interface ArtDisplayData {
   title: string;
@@ -32,4 +33,24 @@ export class DisplayComponent {
 
   filledStarsArray = new Array(this.data.rating).fill(0);
   emptyStarsArray = new Array(5 - this.data.rating).fill(0);
+
+  //TODO - move logic to next-art service
+  movieService = inject(MovieService);
+
+  constructor() {
+    this.movieService.getRandomMovie().subscribe((movie: any) => {
+      this.data = {
+        title: movie.title,
+        author: '',
+        rating: Math.round(movie.vote_average / 2),
+        year: movie.release_date.split('-')[0],
+        description: movie.overview,
+        imageUrl: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+        tags: movie.genre_ids
+      }
+
+      this.filledStarsArray = new Array(this.data.rating).fill(0);
+      this.emptyStarsArray = new Array(5 - this.data.rating).fill(0);
+    });
+  }
 }

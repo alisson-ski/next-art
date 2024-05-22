@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CreditsComponent } from './credits/credits.component';
 import { ControlsComponent } from './controls/controls.component';
 import { DisplayComponent } from './display/display.component';
-import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -17,9 +16,6 @@ import { environment } from '../environments/environment';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
 
-  ngOnInit() {
-    console.log('test env:', environment.apiKeys.movie);
-  }
 }
