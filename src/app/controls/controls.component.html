@@ -1,4 +1,15 @@
 <div class="component-container">
-  <button class="bg-black">Books</button>
-  <button class="bg-black">Next -></button>
+  <button
+    [class.bg-black]="(nextArtService.currentQueue$ | async) != 'movie'"
+    [class.bg-violet]="(nextArtService.currentQueue$ | async) == 'movie'"
+    (click)="switchQueue('movie')">
+    Movies
+  </button>
+  <button
+    [class.bg-black]="(nextArtService.currentQueue$ | async) != 'tvShow'"
+    [class.bg-violet]="(nextArtService.currentQueue$ | async) == 'tvShow'"
+    (click)="switchQueue('tvShow')">
+    Tv Shows
+  </button>
+  <button class="bg-black" (click)="nextArtService.next()">Next -></button>
 </div>

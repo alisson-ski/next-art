@@ -1,33 +1,33 @@
 <div class="component-container">
   <div class="cover-and-tags-container">
     <div class="cover-container">
-      <img class="cover" src="{{data.imageUrl}}" alt="{{data.title}} cover" />
+      <img class="cover" src="{{(data$ | async)?.imageUrl}}" alt="{{(data$ | async)?.title}} cover" />
 
       <div class="stars-container">
-        @for (n of filledStarsArray; track $index) {
+        @for (n of (filledStarsArray$ | async); track $index) {
           <span class="icon-star bg-yellow"></span>
         }
-        @for (n of emptyStarsArray; track $index) {
+        @for (n of (emptyStarsArray$ | async); track $index) {
           <span class="icon-star bg-gray"></span>
         }
       </div>
     </div>
     <div class="tags-container">
-      <span class="ski-tag" *ngFor="let tag of data.tags">{{tag}}</span>
+      <span class="ski-tag" *ngFor="let tag of (data$ | async)?.tags">{{tag}}</span>
     </div>
   </div>
 
   <div class="readable-data-container">
     <div class="title-container">
-      <h2>{{data.title}}</h2>
+      <h2>{{(data$ | async)?.title}}</h2>
     </div>
 
     <div class="authoring-container">
-      <h3 class="author-and-year">{{data.author ? data.author + ', ' : ''}} {{data.year}}</h3>
+      <h3 class="author-and-year">{{(data$ | async)?.author ? (data$ | async)?.author + ', ' : ''}} {{(data$ | async)?.year}}</h3>
     </div>
 
     <div class="description-container">
-      <p>{{data.description}}</p>
+      <p>{{(data$ | async)?.description}}</p>
     </div>
   </div>
 </div>
