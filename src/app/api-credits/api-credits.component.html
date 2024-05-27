@@ -1,0 +1,4 @@
+<div class="component-container">
+  <span>Powered By</span>
+  <img [src]="(nextArtService.currentAPIBrandImageConfig$ | async)?.url" [style.height]="(nextArtService.currentAPIBrandImageConfig$ | async)?.height" alt="API Brand">
+</div>

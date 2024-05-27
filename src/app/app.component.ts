@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CreditsComponent } from './credits/credits.component';
 import { ControlsComponent } from './controls/controls.component';
 import { DisplayComponent } from './display/display.component';
+import { ApiCreditsComponent } from './api-credits/api-credits.component';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,8 @@ import { DisplayComponent } from './display/display.component';
     CommonModule,
     CreditsComponent,
     ControlsComponent,
-    DisplayComponent
+    DisplayComponent,
+    ApiCreditsComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

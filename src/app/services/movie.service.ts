@@ -16,6 +16,10 @@ export class MovieService implements ArtService {
 
   baseUrl = 'https://api.themoviedb.org/3';
   apiKey = environment.apiKeys.movie;
+  brandImageConfig = {
+    url: 'assets/api-brands/tmdb.svg',
+    height: '0.7rem'
+  };
 
   protected genreMap = new Map<number, string>([
     [28, 'Action'],

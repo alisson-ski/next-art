@@ -28,7 +28,5 @@ export class DisplayComponent {
     return new Array(5 - data.rating).fill(0);
   }));
 
-  constructor() {
-    this.data$.subscribe(console.log)
-  }
+  constructor() { }
 }

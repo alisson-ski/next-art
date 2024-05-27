@@ -16,6 +16,10 @@ export class BookService implements ArtService {
 
   baseUrl = 'https://www.googleapis.com/books/v1';
   apiKey = environment.apiKeys.book;
+  brandImageConfig = {
+    url: 'assets/api-brands/google-books.svg',
+    height: '1.4rem'
+  };
 
   subjectNames = [
     'adventure',

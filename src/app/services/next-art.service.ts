@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { ArtDisplayData } from '../interfaces/art-display-data';
 import { BehaviorSubject, Observable, Subject, map } from 'rxjs';
 import { MovieService } from './movie.service';
-import { ArtService } from '../interfaces/art-service';
+import { ArtService, BrandImageConfig } from '../interfaces/art-service';
 import { BookService } from './book.service';
 import { TvShowService } from './tv-show.service';
 
@@ -53,6 +53,10 @@ export class NextArtService {
 
   currentArtDisplayData$: Observable<ArtDisplayData | null> = this.currentQueueItem.asObservable().pipe(map(queueItem => {
     return queueItem.data;
+  }));
+
+  currentAPIBrandImageConfig$: Observable<BrandImageConfig> = this.currentQueue$.pipe(map(queueName => {
+    return this.queues[queueName].service.brandImageConfig;
   }));
 
   constructor() {
