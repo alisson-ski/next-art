@@ -35,6 +35,10 @@ export class NextArtService {
     movie: {
       service: this.movieService,
       artList: []
+    },
+    book: {
+      service: this.bookService,
+      artList: []
     }
   }
 

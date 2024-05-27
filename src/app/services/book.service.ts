@@ -14,57 +14,60 @@ export class BookService implements ArtService {
   http = inject(HttpClient);
   utilityService = inject(UtilityService);
 
-  baseUrl = 'https://api.nytimes.com/svc/books/v3/lists';
+  baseUrl = 'https://www.googleapis.com/books/v1';
   apiKey = environment.apiKeys.book;
 
-  listNames = [
-    'hardcover-fiction',
-    'trade-fiction-paperback',
-    'hardcover-graphic-books',
-    'paperback-graphic-books',
-    'manga',
-    'combined-print-fiction',
-    'young-adult',
-    'animals',
-    'culture',
-    'graphic-books-and-manga',
-    'young-adult-paperback-monthly'
+  subjectNames = [
+    'adventure',
+    'classics',
+    'fantasy',
+    'horror',
+    'mystery',
+    'romance',
+    'science fiction',
+    'fiction',
   ]
 
-  // years = Array.from({length: 100}, (v, k) => k + 1920).map(String);
-
   private variableFilters = [
-    {name: 'list', values: this.listNames},
-    {name: 'data', values: ['current']}, //TODO: Find a way to get random dates
+    {name: 'list', values: this.subjectNames},
   ]
 
   constructor() { }
 
   getRandomArt(): Promise<ArtDisplayData> {
-    const params = this.getBaseParams();
+    const params = this.getRandomQueryParams();
 
-    const list = this.utilityService.getRandomItemFromArray(this.listNames);
+    return lastValueFrom(this.http.get(`${this.baseUrl}/volumes`, { params }).pipe(map((res: any) => {
+      const volume = this.utilityService.getRandomItemFromArray(res['items']);
+      const book = volume.volumeInfo;
 
-    return lastValueFrom(this.http.get(`${this.baseUrl}/current/${list}.json`, { params }).pipe(map((res: any) => {
-      const item = this.utilityService.getRandomItemFromArray(res['results']['books']);
-      return this.parseIntoArtDisplayData(item);
+      book.externalThumbnail = `https://books.google.com/books/publisher/content/images/frontcover/${volume.id}?fife=w400-h600&source=gbs_api`
+
+      return this.parseIntoArtDisplayData(book);
     })));
   }
 
   parseIntoArtDisplayData(book: any): ArtDisplayData {
     return {
       title: book.title,
-      author: book.author,
+      author: book.authors?.join(', '),
       rating: 0, //TODO: Find a way to get ratings
-      year: '1326', //TODO: Find a way to get years
+      year: book.publishedDate?.split('-')[0],
       description: book.description,
-      imageUrl: book.book_image,
-      tags: [] //TODO: Find a way to get tags
+      imageUrl: book.imageLinks?.thumbnail ? (book.imageLinks?.thumbnail + '&fife=w800') : book.externalThumbnail,
+      tags: book.categories
     }
   }
 
+  protected getRandomQueryParams() {
+    let params = this.getBaseParams()
+      .set('q', 'subject:' + this.utilityService.getRandomItemFromArray(this.subjectNames));
+
+    return params;
+  }
+
   private getBaseParams() {
-    return new HttpParams().set('api-key', this.apiKey)
-      .set('offset', 40);
+    return new HttpParams().set('key', this.apiKey)
+    .set('maxResults', '40')
   }
 }

@@ -29,7 +29,7 @@ export class TvShowService extends MovieService {
 
   override variableFilters = [
     {name: 'with_genres', values: Array.from(this.genreMap.keys())},
-    {name: 'page', values: ['1', '2', '3']},
+    {name: 'page', values: ['1']},
   ]
 
   constructor() {

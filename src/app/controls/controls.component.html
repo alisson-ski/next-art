@@ -11,5 +11,11 @@
     (click)="switchQueue('tvShow')">
     Tv Shows
   </button>
+  <button
+    [class.bg-black]="(nextArtService.currentQueue$ | async) != 'book'"
+    [class.bg-violet]="(nextArtService.currentQueue$ | async) == 'book'"
+    (click)="switchQueue('book')">
+    Books
+  </button>
   <button class="bg-black" (click)="nextArtService.next()">Next -></button>
 </div>
