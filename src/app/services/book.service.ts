@@ -62,13 +62,22 @@ export class BookService implements ArtService {
       description = 'First sentence of the book: ' + work.first_sentence[0] + '.';
     }
 
+    let imageUrl = '';
+
+    try {
+      const imageFile = await this.utilityService.getFileFromUrl(`https://covers.openlibrary.org/b/olid/${work.cover_edition_key}-L.jpg`, 'cover.jpg', 'image/jpeg')
+      imageUrl = URL.createObjectURL(imageFile);
+    } catch (e) {
+      console.error('Error getting image file:', e);
+    }
+
     return {
       title: work.title,
       author: work.author_name?.join(', '),
       rating: Math.round(work.ratings_average),
       year: work.first_publish_year,
       description: description || 'Description not found',
-      imageUrl: `https://covers.openlibrary.org/b/olid/${work.cover_edition_key}-M.jpg`,
+      imageUrl: imageUrl,
       tags: work.subject.filter((s: string) => s.length < 16).slice(0, 5),
     }
   }

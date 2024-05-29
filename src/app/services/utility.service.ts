@@ -14,4 +14,10 @@ export class UtilityService {
   getRandomNumber(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
+
+  async getFileFromUrl(url: string, name: string, type: string): Promise<File> {
+    const response = await fetch(url);
+    const data = await response.blob();
+    return new File([data], name, { type });
+  }
 }
