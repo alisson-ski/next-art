@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="tags-container">
-      <span class="ski-tag" *ngFor="let tag of (data$ | async)?.tags">{{tag}}</span>
+      <span class="ski-tag" *ngFor="let tag of (data$ | async)?.tags">{{tag | titlecase}}</span>
     </div>
   </div>
 
@@ -23,9 +23,11 @@
     </div>
 
     <div class="authoring-container">
-      <h3 class="author-and-year">{{(data$ | async)?.author ? (data$ | async)?.author + ', ' : ''}} {{(data$ | async)?.year}}</h3>
+      <h3 class="author-and-year">
+        {{(data$ | async)?.author || ''}}{{(data$ | async)?.author ? ',' : ''}}
+        {{(data$ | async)?.year}}
+      </h3>
     </div>
-
     <div class="description-container">
       <p>{{(data$ | async)?.description}}</p>
     </div>

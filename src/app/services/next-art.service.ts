@@ -64,7 +64,6 @@ export class NextArtService {
   }
 
   init() {
-    this.currentQueueItem.subscribe(console.log)
     this.currentQueue.next('movie');
     this.fillQueues();
     this.setCurrentQueueItem();

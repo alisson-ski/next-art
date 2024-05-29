@@ -14,64 +14,91 @@ export class BookService implements ArtService {
   http = inject(HttpClient);
   utilityService = inject(UtilityService);
 
-  baseUrl = 'https://www.googleapis.com/books/v1';
+  baseUrl = 'https://openlibrary.org';
   apiKey = environment.apiKeys.book;
   brandImageConfig = {
-    url: 'assets/api-brands/google-books.svg',
+    url: 'assets/api-brands/open-library.svg',
     height: '1.4rem'
   };
 
   subjectNames = [
-    'adventure',
-    'classics',
-    'fantasy',
-    'horror',
-    'mystery',
-    'romance',
-    'science fiction',
+    'fairy tales',
     'fiction',
+    'fantasy',
+    'romance',
   ]
 
   private variableFilters = [
     {name: 'list', values: this.subjectNames},
+    {name: 'offset', values: Array.from({length: 300}, (_, i) => i.toString())},
   ]
 
   constructor() { }
 
-  getRandomArt(): Promise<ArtDisplayData> {
+  async getRandomArt(): Promise<ArtDisplayData> {
     const params = this.getRandomQueryParams();
-
-    return lastValueFrom(this.http.get(`${this.baseUrl}/volumes`, { params }).pipe(map((res: any) => {
-      const volume = this.utilityService.getRandomItemFromArray(res['items']);
-      const book = volume.volumeInfo;
-
-      book.externalThumbnail = `https://books.google.com/books/publisher/content/images/frontcover/${volume.id}?fife=w400-h600&source=gbs_api`
-
-      return this.parseIntoArtDisplayData(book);
-    })));
+  
+    const work = await lastValueFrom(
+      this.http.get(`${this.baseUrl}/search.json`, { params })
+        .pipe(map((res: any) => {
+          return res['docs'][0]
+        }))
+    );
+  
+    const artDisplayData = await this.parseIntoArtDisplayData(work);
+    return artDisplayData;
   }
 
-  parseIntoArtDisplayData(book: any): ArtDisplayData {
-    return {
-      title: book.title,
-      author: book.authors?.join(', '),
-      rating: 0, //TODO: Find a way to get ratings
-      year: book.publishedDate?.split('-')[0],
-      description: book.description,
-      imageUrl: book.imageLinks?.thumbnail ? (book.imageLinks?.thumbnail + '&fife=w800') : book.externalThumbnail,
-      tags: book.categories
+  async parseIntoArtDisplayData(work: any): Promise<ArtDisplayData> {
+    let description = '';
+
+    if (work.isbn) {
+      const isbn = work.isbn[0];
+      const synopsis = await this.getBookSynopsis(isbn);
+      description = synopsis;
+    } 
+    
+    if (!description && work.first_sentence) {
+      description = 'First sentence of the book: ' + work.first_sentence[0] + '.';
     }
+
+    return {
+      title: work.title,
+      author: work.author_name?.join(', '),
+      rating: Math.round(work.ratings_average),
+      year: work.first_publish_year,
+      description: description || 'Description not found',
+      imageUrl: `https://covers.openlibrary.org/b/olid/${work.cover_edition_key}-M.jpg`,
+      tags: work.subject.filter((s: string) => s.length < 16).slice(0, 5),
+    }
+  }
+
+  async getBookSynopsis(isbn: string): Promise<string> {
+    const synopsis = await lastValueFrom(
+      this.http.get(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=${this.apiKey}`)
+        .pipe(map((res: any) => {
+            if (res.items) {
+              return res.items[0]?.volumeInfo?.description;
+            } else {
+              return null;
+            }
+        }))
+    );
+  
+    return synopsis;
   }
 
   protected getRandomQueryParams() {
     let params = this.getBaseParams()
-      .set('q', 'subject:' + this.utilityService.getRandomItemFromArray(this.subjectNames));
+      .set('q', 'subject:' + this.utilityService.getRandomItemFromArray(this.subjectNames))
+      .set('offset', this.utilityService.getRandomItemFromArray(this.variableFilters[1].values));
 
     return params;
   }
 
   private getBaseParams() {
-    return new HttpParams().set('key', this.apiKey)
-    .set('maxResults', '40')
+    return new HttpParams().set('lang', 'en')
+    .set('fields', 'key,title,author_name,editions,ratings_average,synopsis,first_publish_year,cover_edition_key,subject,isbn')
+    .set('limit', '1');
   }
 }

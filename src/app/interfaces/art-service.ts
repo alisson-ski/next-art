@@ -7,9 +7,8 @@ export interface BrandImageConfig {
 
 export interface ArtService {
   baseUrl: string;
-  apiKey: string;
   brandImageConfig: BrandImageConfig
 
   getRandomArt(): Promise<ArtDisplayData>;
-  parseIntoArtDisplayData(item: any): ArtDisplayData;
+  parseIntoArtDisplayData(item: any): ArtDisplayData | Promise<ArtDisplayData>;
 }
