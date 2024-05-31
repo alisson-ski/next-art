@@ -51,12 +51,19 @@ export class BookService implements ArtService {
 
   async parseIntoArtDisplayData(work: any): Promise<ArtDisplayData> {
     let description = '';
+    let isbn = null;
 
     if (work.isbn) {
-      const isbn = work.isbn[0];
+      isbn = work.isbn[0];
+    } 
+    else if (Array.isArray(work.editions?.docs)) {
+      isbn = work.editions.docs[0].isbn?.[0];
+    }
+
+    if (isbn) {
       const synopsis = await this.getBookSynopsis(isbn);
       description = synopsis;
-    } 
+    }    
     
     if (!description && work.first_sentence) {
       description = 'First sentence of the book: ' + work.first_sentence[0] + '.';
