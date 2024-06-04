@@ -17,15 +17,16 @@ export class DisplayComponent {
   nextArtService = inject(NextArtService);
   
   data$: Observable<ArtDisplayData | null> = this.nextArtService.currentArtDisplayData$;
+  isLoading$: Observable<boolean> = this.nextArtService.isLoading$;
 
   filledStarsArray$: Observable<any[]> = this.data$.pipe(map(data => {
-    if (data == null) return [];
-    return new Array(data.rating).fill(0);
+    if (!data?.rating) return [];
+    return new Array(Math.round(data.rating)).fill(0);
   }));
 
   emptyStarsArray$: Observable<any[]> = this.data$.pipe(map(data => {
-    if (data == null) return [];
-    return new Array(5 - data.rating).fill(0);
+    if (!data?.rating) return new Array(5).fill(0);
+    return new Array(Math.round(5 - data.rating)).fill(0);
   }));
 
   constructor() { }

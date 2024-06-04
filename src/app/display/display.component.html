@@ -1,7 +1,7 @@
-<div class="component-container">
+<div class="component-container" [class.hidden]="(isLoading$ | async) === true || (isLoading$ | async) == undefined">
   <div class="cover-and-tags-container">
     <div class="cover-container">
-      <img class="cover" src="{{(data$ | async)?.imageUrl}}" alt="{{(data$ | async)?.title}} cover" />
+      <img class="cover" src="{{(data$ | async)?.imageUrl}}" alt="{{(data$ | async)?.title}}" />
 
       <div class="stars-container">
         @for (n of (filledStarsArray$ | async); track $index) {
@@ -32,4 +32,8 @@
       <p>{{(data$ | async)?.description}}</p>
     </div>
   </div>
+</div>
+
+<div class="component-container loader-container" [class.hidden]="(isLoading$ | async) === false">
+  <div class="ski-loader"></div>
 </div>

@@ -1,10 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { ArtDisplayData } from '../interfaces/art-display-data';
-import { BehaviorSubject, Observable, Subject, map } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, filter, map } from 'rxjs';
 import { MovieService } from './movie.service';
 import { ArtService, BrandImageConfig } from '../interfaces/art-service';
 import { BookService } from './book.service';
 import { TvShowService } from './tv-show.service';
+import { UtilityService } from './utility.service';
 
 interface QueueItem {
   isLoading: boolean;
@@ -26,6 +27,7 @@ export class NextArtService {
   movieService = inject(MovieService);
   tvShowService = inject(TvShowService);
   bookService = inject(BookService);
+  utilityService = inject(UtilityService);
 
   queues: Queues = {
     tvShow: {
@@ -51,9 +53,12 @@ export class NextArtService {
     return queueItem.isLoading;
   }));
 
-  currentArtDisplayData$: Observable<ArtDisplayData | null> = this.currentQueueItem.asObservable().pipe(map(queueItem => {
-    return queueItem.data;
-  }));
+  currentArtDisplayData$: Observable<ArtDisplayData | null> = this.currentQueueItem.asObservable().pipe(
+    map(queueItem => {
+      return queueItem.data;
+    }),
+    filter(data => data !== null)
+  );
 
   currentAPIBrandImageConfig$: Observable<BrandImageConfig> = this.currentQueue$.pipe(map(queueName => {
     return this.queues[queueName].service.brandImageConfig;
@@ -85,14 +90,17 @@ export class NextArtService {
       };
 
       this.queues[queueName].service.getRandomArt().then(artDisplayData => {
-        queueItem.data = artDisplayData;
-        queueItem.isLoading = false;
-        this.setCurrentQueueItem();
-        
+        return this.utilityService.getFileFromUrl(artDisplayData.imageUrl, 'cover.jpg', 'image/jpeg')
+          .then(imageFile => {
+            const imageUrl = URL.createObjectURL(imageFile);
+            queueItem.data = { ...artDisplayData, imageUrl: imageUrl };
+            queueItem.isLoading = false;
+            this.setCurrentQueueItem();
+          });
       }).catch((res) => {
-        console.log(res);
-        
-        alert('Something went wrong fetching data, sorry!')
+        console.error('Error getting item: ', res);
+        this.fillQueue(queueName, 1);
+        queue.artList = queue.artList.filter(item => item !== queueItem);
       });
 
       queue.artList.push(queueItem);
@@ -100,7 +108,7 @@ export class NextArtService {
   }
 
   setCurrentQueueItem() {
-    const queue = this.queues[this.currentQueue.value];    
+    const queue = this.queues[this.currentQueue.value];
     this.currentQueueItem.next(queue.artList[0]);
   }
 

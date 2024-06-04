@@ -17,5 +17,7 @@
     (click)="switchQueue('book')">
     Books
   </button>
-  <button class="bg-red" (click)="nextArtService.next()">Next ➔</button>
+  <button class="bg-red" (click)="nextArtService.next()"
+    [disabled]="(nextArtService.isLoading$ | async)"
+  >Next ➔</button>
 </div>

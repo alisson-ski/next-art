@@ -6,6 +6,15 @@
   display: flex;
   gap: 1.5rem;
 
+  &.loader-container {
+    justify-content: center;
+    align-items: center;
+  }
+
+  &.hidden {
+    display: none;
+  }
+
   .cover-and-tags-container {
     width: 40%;
     display: flex;

@@ -36,15 +36,18 @@ export class BookService implements ArtService {
   constructor() { }
 
   async getRandomArt(): Promise<ArtDisplayData> {
-    const params = this.getRandomQueryParams();
-  
-    const work = await lastValueFrom(
-      this.http.get(`${this.baseUrl}/search.json`, { params })
-        .pipe(map((res: any) => {
-          return res['docs'][0]
-        }))
-    );
-  
+    let work: any = {};
+
+    while (!work.cover_edition_key) {
+      const params = this.getRandomQueryParams();
+      const response = await lastValueFrom(this.http.get<any>(`${this.baseUrl}/search.json`, { params }));
+      work = response['docs'][0];
+
+      if (!work.cover_edition_key) {
+        console.log('Retrying book search...');
+      }
+    }  
+
     const artDisplayData = await this.parseIntoArtDisplayData(work);
     return artDisplayData;
   }
@@ -69,22 +72,13 @@ export class BookService implements ArtService {
       description = 'First sentence of the book: ' + work.first_sentence[0] + '.';
     }
 
-    let imageUrl = '';
-
-    try {
-      const imageFile = await this.utilityService.getFileFromUrl(`https://covers.openlibrary.org/b/olid/${work.cover_edition_key}-L.jpg`, 'cover.jpg', 'image/jpeg')
-      imageUrl = URL.createObjectURL(imageFile);
-    } catch (e) {
-      console.error('Error getting image file:', e);
-    }
-
     return {
       title: work.title,
       author: work.author_name?.join(', '),
       rating: Math.round(work.ratings_average),
       year: work.first_publish_year,
       description: description || 'Description not found',
-      imageUrl: imageUrl,
+      imageUrl: `https://covers.openlibrary.org/b/olid/${work.cover_edition_key}-L.jpg`,
       tags: work.subject.filter((s: string) => s.length < 16).slice(0, 5),
     }
   }
